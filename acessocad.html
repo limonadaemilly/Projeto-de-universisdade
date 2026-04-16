@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+<p id="resultado"></p>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const numero = params.get("numero");
+
+        if(numero) {
+             document.getElementById("resultado").innerhtml =
+              <h2>SUA CONTA FOI CRIADA COM SUCESSO!</h2>;
+               <p> "Sua matrícula é: <br>" + numero; "</br></p>;
+            } 
+         else { document.getElementById("resultado").innerText = "Erro: Mátricula não encontrada."; }
+       
+    
+</script>
