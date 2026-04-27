@@ -1,51 +1,41 @@
 <?php
 if(isset($_POST['submit'])) {
 
-   // print_r($_POST['nome']);
-   // print_r("\n");
-  //  print_r($_POST['CPF']);
-   // print_r("\n");
-    //print_r($_POST['genero']);
-   // print_r("\n");
-   // print_r($_POST['nascimento']);
-
     include_once('config.php');
 
-   $nome = $_POST['nome'];
-   $cpf = $_POST['cpf'];            
-   $sexo = $_POST['sexo'];
-   $nascimento = $_POST['nascimento'];
+    $nome = $_POST['nome'];
+    $cpf = $_POST['cpf'];            
+    $sexo = $_POST['sexo'];
+    $nascimento = $_POST['nascimento'];
    
-    
-    $sql = "INSERT INTO alunos (nome, cpf, sexo, nascimento) VALUES (?, ?, ?, ?)";
+    do {
+    $matricula = rand(100000, 999999);
 
+    $check = $conexao->prepare("SELECT id FROM alunos WHERE matricula = ?");
+    $check->bind_param("s", $matricula);
+    $check->execute();
+    $check->store_result();
+
+} while($check->num_rows > 0);
+
+    $sql = "INSERT INTO alunos (nome, cpf, sexo, nascimento, matricula) VALUES (?, ?, ?, ?, ?)";
     $stmt = $conexao->prepare($sql);
 
     if (!$stmt) {
         die("Erro na preparação: " . $conexao->error);
     }
 
-    $stmt->bind_param("ssss", $nome, $cpf, $sexo, $nascimento);
+    $stmt->bind_param("sssss", $nome, $cpf, $sexo, $nascimento, $matricula);
 
     if($stmt->execute()) {
-        
-        header("Location: cadastro.php?sucesso=1");
-        exit; 
-    
-        try{
+        header("Location: acessocad.php?nome=" . urlencode($nome) . "&matricula=" . $matricula);
+        exit();
+    } else {
+        echo "Erro ao cadastrar: " . $stmt->error;
+    }
 
-        $stmt -> execute();
-        header("Location: cadastro.php?sucesso=1");
-
-        }catch(mysli_sql_exception $e){
-            if($e->getCode() == 1062) {
-                header("Location: cadastro.php?erro=cpf_duplicado");
-                exit;
-            } else {
-                die("Erro na execução: " . $e->getMessage());
-            }
-        }
-}
+    $stmt->close();
+    $conexao->close();
 }
 
 
@@ -169,14 +159,9 @@ if(isset($_POST['submit'])) {
 
                 <div class="mensagem">
                 <?php
-                if (isset($_GET['erro']) && $_GET['erro'] == 'cpf_duplicado'){
-
-                echo "<p style = 'color: #ff4d4d; font-weight: bold background: rgba(255,0,0,0.1); padding: 10px; border-radius: 5px; text-align: center;'>⚠️ Este CPF já está cadastrado!</p>";
-                } 
-
-                if (isset($_GET['sucesso'])){ 
-                    echo "<p style='color: #2ecc71; font-weight: bold; text-align: center;'>✅ Cadastro realizado com sucesso!</p>";
-                }
+                
+                
+                
                 ?>      
                 </div>
 
