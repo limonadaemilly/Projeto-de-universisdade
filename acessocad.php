@@ -13,8 +13,7 @@ $matricula = $_GET['matricula'];
 body{
     font-family: Arial, Helvetica, sans-serif;
     background-image: linear-gradient(to right, rgb(2, 0, 36), rgb(9, 121, 121), rgb(0, 212, 255));
-    margin: 0;
-    padding: 0;
+   
 }
 
 .container{

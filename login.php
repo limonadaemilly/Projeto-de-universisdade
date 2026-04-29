@@ -1,3 +1,37 @@
+<?php
+
+session_start();
+
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    include_once("config.php"); 
+
+    $matricula = $_POST['matricula'];
+    $cpf = $_POST['cpf']; 
+    $sql = "SELECT * FROM alunos WHERE matricula = ? AND cpf = ? LIMIT 1";
+    $stmt = $conexao->prepare($sql);
+    $stmt->bind_param("ss", $matricula, $cpf);
+    $stmt->execute();
+    $resultado = $stmt->get_result();
+
+    if ($resultado->num_rows > 0) {
+        
+        $dados_aluno = $resultado->fetch_assoc();
+        
+        
+        $_SESSION['aluno_id'] = $dados_aluno['id']; 
+        $_SESSION['aluno_nome'] = $dados_aluno['nome'];
+        
+        
+        header("Location: acesso.html"); 
+        exit();
+    } else {
+        
+        $erro = "Matrícula ou CPF incorretos!";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -122,11 +156,10 @@
           <input type="text" name="matricula" placeholder="MATRICULA" required>
           <label for="matricula" ></label>
          
-          <input type="password" name="senha" placeholder="SENHA" required>  
-          <label for="password" ></label>
+          <input type="text" name="cpf" placeholder="CPF" required>  
+          <label for="cpf" ></label>
          
-          <div class="conteiner senha">
-          <i class="mostrar senha" id="mostrar senha"></i>
+         
           <button  type="submit">ENTRAR</button><br><br>
 
           <a href="cadastro.php" class="cadastro">CADASTRE-SE</a>
